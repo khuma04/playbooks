@@ -1,0 +1,33 @@
+---
+
+#### This Playbook can be used to gather a list of packages containing a certain string ####
+#### In This example I am searching for any python packages ###
+
+
+
+- name: package facts 
+  hosts: all
+  tasks:
+
+  - name: Gather the package facts 
+    ansible.builtin.package_facts:
+      manager: auto
+
+
+  - name: store the name value of each object in the variable python_list
+    set_fact:
+      python_list: "{{ newdict | selectattr('key', 'search', 'python') | map(attribute='value') | flatten | map(attribute='name') }}"
+   
+  - name: show python list 
+    debug:
+      var: python_list
+
+  - name: Send the list of names to a file
+    ansible.builtin.lineinfile:
+    # We are using the join filter to seperate list values with the newline delimiter
+    # To convert a string to list use the 'split' filter
+      line: "{{ python_list | join('\n') }}"
+      dest: /tmp/packages.txt
+      insertafter: EOF
+      create: true
+    
