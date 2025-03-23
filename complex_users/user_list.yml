@@ -1,0 +1,21 @@
+myusers:
+  - name: john
+    uid: 2003
+    group: developer
+    first: the
+    middle: final
+    last: frontier
+
+  - name: casey
+    uid: 2004
+    group: admin
+    first: enter
+    middle: the
+    last: dragon
+
+  - name: terry
+    uid: 2005
+    group: admin
+    first: hard
+    middle: boiled
+    last: egg

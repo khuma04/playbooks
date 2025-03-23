@@ -1,0 +1,9 @@
+new_groups:
+  developers:
+    users:
+    - john
+  admin:
+    users:
+    - casey
+    - terry
+

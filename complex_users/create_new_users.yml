@@ -1,0 +1,35 @@
+---
+- name: creating new users using complex loops 
+  hosts: serverb 
+  become: true
+  vars_files: 
+    - user_list.yml 
+    - group_list.yml
+  tasks:
+  - name: ensure groups exist 
+    ansible.builtin.group:
+      name: "{{ item.key }}"
+      state: present
+    loop: "{{ new_groups | dict2items}}"
+
+  - name: create users
+    vars:
+      plain_password: "{{ lookup('ansible.builtin.password', './credentials/password-'+ item.name + ' chars=digits length=5') }}"
+    ansible.builtin.user:
+      name: "{{ item.name }}"
+      uid: "{{ item.uid }}"
+      password: "{ {{ plain_password | password_hash('sha512', 'MYSALT') }}"
+      update_password: always
+      generate_ssh_key: true
+      comment: "{{ item.first | capitalize }} {{ item.middle | capitalize }} {{ item.last | capitalize }}"
+    loop: "{{ myusers | selectattr('name','defined') }}"
+
+  - name: add authorized keys
+    ansible.builtin.authorized_key:
+      user: "{{ item.name }}"
+      state: present
+      key: "{{ lookup('file', './pub_keys/' + item.name + '.pub') }}"
+    loop: "{{ myusers | selectattr('name','defined') }}"
+
+
+
