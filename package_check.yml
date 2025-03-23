@@ -16,8 +16,8 @@
 
   - name: store the name value of each object in the variable python_list
     set_fact:
-      python_list: "{{ newdict | selectattr('key', 'search', 'python') | map(attribute='value') | flatten | map(attribute='name') }}"
-   
+      python_list: "{{ ansible_facts.packages | dict2items | selectattr('key', 'search', 'python') | map(attribute='value') | flatten | map(attribute='name') }}"
+
   - name: show python list 
     debug:
       var: python_list
